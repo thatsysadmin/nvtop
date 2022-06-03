@@ -37,7 +37,7 @@ License:        GPLv3
 URL:            https://github.com/thatsysadmin/nvtop
 Source0:        nvtop-0.0.0_bin.tar.gz
 
-Requires:       
+Requires:      kernel 
 
 %description
 (h)top like task monitor for AMD and NVIDIA GPUs. It can handle multiple GPUs and print information about them in a htop familiar way.
