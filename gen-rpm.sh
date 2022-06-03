@@ -1,18 +1,11 @@
 #!/bin/sh
 
 # Export filepaths
-export BUILDDIR=@CMAKE_CURRENT_SOURCE_DIR@/build
+export BUILDDIR=/nvtop/build
 export BUILDROOT=~/rpmbuild/
 export RPMSRC=~/rpmbuild/SOURCES
 export RPMSPEC=~/rpmbuild/SPECS
 export RPMBUILD=~/rpmbuild/BUILD
-
-# Check for Docker switch
-if [ "$1" == "-d" ]; then
-	export DOCKERSTATUS=TRUE
-else
-	export DOCKERSTATUS=FALSE
-fi
 
 # Check if user's rpmbuild folder is there, if so, temoprairly rename it.
 if [ -d ~/rpmbuild ]; then
@@ -32,143 +25,60 @@ mkdir ~/rpmbuild/SOURCES
 mkdir ~/rpmbuild/SPECS
 mkdir ~/rpmbuild/SRPMS
 
-# Create sunshine .spec file with preinstall and postinstall scripts
-cat << 'EOF' > $RPMSPEC/sunshine.spec
-Name:           sunshine
-Version:        @PROJECT_VERSION@
+# Create nvtop .spec file with preinstall and postinstall scripts
+cat << 'EOF' > $RPMSPEC/nvtop.spec
+Name:           nvtop
+Version:        0.0.0
 Release:        1%{?dist}
 Summary:        An NVIDIA Gamestream-compatible hosting server
 BuildArch:      x86_64
 
 License:        GPLv3
-URL:            https://github.com/SunshineStream/Sunshine
-Source0:        sunshine-@PROJECT_VERSION@_bin.tar.gz
+URL:            https://github.com/thatsysadmin/nvtop
+Source0:        nvtop-0.0.0_bin.tar.gz
 
-Requires:       systemd ffmpeg rpmfusion-free-release
+Requires:       
 
 %description
-An NVIDIA Gamestream-compatible hosting server
+(h)top like task monitor for AMD and NVIDIA GPUs. It can handle multiple GPUs and print information about them in a htop familiar way.
 
 %pre
-#!/bin/sh
-
-# Sunshine Pre-Install Script
-# Store backup for old config files to prevent it from being overwritten
-if [ -f /etc/sunshine/sunshine.conf ]; then
-        cp /etc/sunshine/sunshine.conf /etc/sunshine/sunshine.conf.old
-fi
-
-if [ -f /etc/sunshine/apps_linux.json ]; then
-        cp /etc/sunshine/apps_linux.json /etc/sunshine/apps_linux.json.old
-fi
-
 %post
-#!/bin/sh
-
-# Sunshine Post-Install Script
-export GROUP_INPUT=input
-
-if [ -f /etc/group ]; then
-        if ! grep -q $GROUP_INPUT /etc/group; then
-                echo "Creating group $GROUP_INPUT"
-
-                groupadd $GROUP_INPUT
-        fi
-else
-        echo "Warning: /etc/group not found"
-fi
-
-if [ -f /etc/sunshine/sunshine.conf.old ]; then
-	echo "Restoring old sunshine.conf"
-	mv /etc/sunshine/sunshine.conf.old /etc/sunshine/sunshine.conf
-fi
-
-if [ -f /etc/sunshine/apps_linux.json.old ]; then
-	echo "Restoring old apps_linux.json"
-	mv /etc/sunshine/apps_linux.json.old /etc/sunshine/apps_linux.json
-fi
-
-# Update permissions on config files for Web Manager
-if [ -f /etc/sunshine/apps_linux.json ]; then
-	echo "chmod 666 /etc/sunshine/apps_linux.json"
-	chmod 666 /etc/sunshine/apps_linux.json
-fi
-
-if [ -f /etc/sunshine/sunshine.conf ]; then
-	echo "chmod 666 /etc/sunshine/sunshine.conf"
-	chmod 666 /etc/sunshine/sunshine.conf
-fi
-
-# Ensure Sunshine can grab images from KMS
-path_to_setcap=$(which setcap)
-if [ -x "$path_to_setcap" ] ; then
-  echo "$path_to_setcap cap_sys_admin+p /usr/bin/sunshine"
-	$path_to_setcap cap_sys_admin+p /usr/bin/sunshine
-fi
-
 %prep
 %setup -q
 
 %install
 rm -rf $RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT/%{_bindir}
-mkdir -p $RPM_BUILD_ROOT/etc/sunshine
-mkdir -p $RPM_BUILD_ROOT/usr/lib/systemd/user
-mkdir -p $RPM_BUILD_ROOT/usr/share/applications
-mkdir -p $RPM_BUILD_ROOT/etc/udev/rules.d
 
-cp sunshine $RPM_BUILD_ROOT/%{_bindir}/sunshine
-cp sunshine.conf $RPM_BUILD_ROOT/etc/sunshine/sunshine.conf
-cp apps_linux.json $RPM_BUILD_ROOT/etc/sunshine/apps_linux.json
-cp sunshine.service $RPM_BUILD_ROOT/usr/lib/systemd/user/sunshine.service
-cp sunshine.desktop $RPM_BUILD_ROOT/usr/share/applications/sunshine.desktop
-cp 85-sunshine-rules.rules $RPM_BUILD_ROOT/etc/udev/rules.d/85-sunshine-rules.rules
+cp nvtop $RPM_BUILD_ROOT/%{_bindir}/nvtop
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
-%{_bindir}/sunshine
-/usr/lib/systemd/user/sunshine.service
-/etc/sunshine/sunshine.conf
-/etc/sunshine/apps_linux.json
-/usr/share/applications/sunshine.desktop
-/etc/udev/rules.d/85-sunshine-rules.rules
+%{_bindir}/nvtop
 
 %changelog
 * Sat Mar 12 2022 h <65380846+thatsysadmin@users.noreply.github.com>
-- Initial packaging of Sunshine.
+- Initial packaging of nvtop.
 EOF
 
-# Copy over sunshine binary and supplemental files into rpmbuild/BUILD/
+# Copy over nvtop binary and supplemental files into rpmbuild/BUILD/
 mkdir genrpm
-mkdir genrpm/sunshine-@PROJECT_VERSION@
-cp sunshine-@PROJECT_VERSION@ genrpm/sunshine-@PROJECT_VERSION@/sunshine
-cp sunshine.service genrpm/sunshine-@PROJECT_VERSION@/sunshine.service
-cp sunshine.desktop genrpm/sunshine-@PROJECT_VERSION@/sunshine.desktop
-cp @CMAKE_CURRENT_SOURCE_DIR@/assets/sunshine.conf genrpm/sunshine-@PROJECT_VERSION@/sunshine.conf
-cp @CMAKE_CURRENT_SOURCE_DIR@/assets/apps_linux.json genrpm/sunshine-@PROJECT_VERSION@/apps_linux.json
-cp @CMAKE_CURRENT_SOURCE_DIR@/assets/85-sunshine-rules.rules genrpm/sunshine-@PROJECT_VERSION@/85-sunshine-rules.rules
+mkdir genrpm/nvtop-0.0.0
+cp nvtop $RPM_BUILD_ROOT/%{_bindir}/nvtop
 cd genrpm
 
 # tarball everything as if it was a source file for rpmbuild
-tar --create --file sunshine-@PROJECT_VERSION@_bin.tar.gz sunshine-@PROJECT_VERSION@/
-cp sunshine-@PROJECT_VERSION@_bin.tar.gz ~/rpmbuild/SOURCES
+tar --create --file nvtop-0.0.0_bin.tar.gz nvtop-0.0.0/
+cp nvtop-0.0.0_bin.tar.gz ~/rpmbuild/SOURCES
 
 # Use rpmbuild to build the RPM package.
-rpmbuild -bb $RPMSPEC/sunshine.spec
+rpmbuild -bb $RPMSPEC/nvtop.spec
 
-# Check if running in a CT
-if [ "$DOCKERSTATUS" == "FALSE" ]; then
-	# Move the completed RPM into the cmake build folder
-	mv ~/rpmbuild/RPMS/x86_64/sunshine-@PROJECT_VERSION@-1.fc*.x86_64.rpm @CMAKE_CURRENT_BINARY_DIR@/
-	echo "Moving completed RPM package into CMake build folder."
-elif [ "$DOCKERSTATUS" == "TRUE" ]; then
-	# Move into pickup location
-	mkdir -p /root/sunshine-build/package-rpm/
-	mv ~/rpmbuild/RPMS/x86_64/sunshine-@PROJECT_VERSION@-1.fc*.x86_64.rpm /root/sunshine-build/package-rpm/sunshine.rpm
-	echo "Moving completed RPM package for pickup."
-fi
+# Move RPM package into pickup location
+mv ~/rpmbuild/RPMS/x86_64/nvtop-0.0.0-1.fc*.x86_64.rpm /root/nvtop-build/package-rpm/nvtop.rpm
 
 # Clean up; delete the rpmbuild folder we created and move back the original one
 if [ "$RPMBUILDEXISTS" == "TRUE" ]; then

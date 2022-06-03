@@ -5,4 +5,4 @@ cd build
 cmake .. -DNVIDIA_SUPPORT=ON
 make
 echo "Built nvtop"
-#bash gen-rpm.sh -d
+bash gen-rpm.sh
