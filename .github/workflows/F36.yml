@@ -6,7 +6,9 @@ jobs:
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
-      - name: Run Docker build container
+      - name: Setup Docker build container
         run: docker build .
+      - name: Build
+        run: docker run -a nvtop_build
       - name: Upload package to artifacts
         run: ls
