@@ -1,4 +1,4 @@
-FROM fedora:latest
+FROM fedora:35
 
 RUN dnf update -y
 RUN dnf install -y cmake ncurses-devel wget
