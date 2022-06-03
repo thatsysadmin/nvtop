@@ -67,7 +67,7 @@ EOF
 # Copy over nvtop binary and supplemental files into rpmbuild/BUILD/
 mkdir genrpm
 mkdir genrpm/nvtop-0.0.0
-cp nvtop $RPM_BUILD_ROOT/%{_bindir}/nvtop
+cp /nvtop/build/src/nvtop $RPM_BUILD_ROOT/%{_bindir}/nvtop
 cd genrpm
 
 # tarball everything as if it was a source file for rpmbuild
@@ -78,7 +78,7 @@ cp nvtop-0.0.0_bin.tar.gz ~/rpmbuild/SOURCES
 rpmbuild -bb $RPMSPEC/nvtop.spec
 
 # Move RPM package into pickup location
-mv ~/rpmbuild/RPMS/x86_64/nvtop-0.0.0-1.fc*.x86_64.rpm /root/nvtop-build/package-rpm/nvtop.rpm
+mv ~/rpmbuild/RPMS/x86_64/nvtop-0.0.0-1.fc*.x86_64.rpm /nvtop/nvtop.rpm
 
 # Clean up; delete the rpmbuild folder we created and move back the original one
 if [ "$RPMBUILDEXISTS" == "TRUE" ]; then
