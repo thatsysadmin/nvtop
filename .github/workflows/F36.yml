@@ -9,8 +9,7 @@ jobs:
       - name: Setup Docker build container
         run: docker build -t nvtop_build .
       - name: Build
-        run: docker images
-      - run: docker run nvtop_build
+        run: docker run nvtop_build
       #- nane: Getting ready for delivery
       #  run: docker cp nvtop_build:/
       - name: Upload package to artifacts
