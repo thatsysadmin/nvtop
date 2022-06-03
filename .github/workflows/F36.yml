@@ -4,6 +4,7 @@ jobs:
   Build_RPM_Package:
     runs-on: ubuntu-latest
     steps:
+      - run: pwd; ls
       - run: docker build .
       - run: docker run nvtop
       - name: Check out repository code
