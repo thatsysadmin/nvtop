@@ -16,4 +16,3 @@ RUN mkdir -p /nvtop/build && \
   rm -rf /nvtop/build
 
 ENV LANG=C.UTF-8
-ENTRYPOINT [ "/usr/local/bin/nvtop" ]
