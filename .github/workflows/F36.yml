@@ -7,7 +7,7 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v3
       - name: Setup Docker build container
-        run: docker image build .
+        run: docker build -t nvtop_build/nvtop_build:latest -f baseimage .
       - name: Build
         run: docker images ps -a
       - run: docker run nvtop_build
