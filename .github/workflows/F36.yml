@@ -11,7 +11,7 @@ jobs:
       - name: Build
         run: docker run nvtop_build
       - name: Getting ready for delivery
-        run: docker cp nvtop_build:/nvtop/nvtop.rpm ../artifacts
+        run: docker cp nvtop_build:mv /root/rpmbuild/RPMS/x86_64/nvtop-0.0.1-1.fc*.x86_64.rpm ../artifacts
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
