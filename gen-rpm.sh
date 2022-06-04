@@ -74,7 +74,7 @@ mv nvtop-0.0.1_bin.tar.gz ~/rpmbuild/SOURCES
 
 # Use rpmbuild to build the RPM package.
 rpmlint ~/rpmbuild/SPECS/nvtop.spec
-rpmbuild -bb $RPMSPEC/nvtop.spec
+QA_RPATHS=$(( 0x0001|0x0010 )) rpmbuild -bb $RPMSPEC/nvtop.spec
 
 # Move RPM package into pickup location
 mv ~/rpmbuild/RPMS/x86_64/nvtop-0.0.1-1.fc*.x86_64.rpm /nvtop/nvtop.rpm
