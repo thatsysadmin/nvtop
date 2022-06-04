@@ -9,12 +9,12 @@ jobs:
       - name: Setup Docker build container
         run: docker build -t nvtop_build .
       - name: Build
-        run: docker run nvtop_build
+        run: docker run --name nvtop_build nvtop_build
       - name: Getting ready for delivery
-        run: docker cp nvtop_build:mv /root/rpmbuild/RPMS/x86_64/nvtop-0.0.1-1.fc*.x86_64.rpm ../artifacts
+        run: mkdir ../artifacts;docker ps -a; docker cp nvtop_build:/nvtop/nvtop.rpm ../artifacts; cd ../artifacts; ls; pwd
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
           name: nvtop
-          path: artifacts/
+          path: /home/runner/work/nvtop/artifacts
           if-no-files-found: warn

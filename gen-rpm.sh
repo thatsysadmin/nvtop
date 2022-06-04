@@ -77,7 +77,9 @@ rpmlint ~/rpmbuild/SPECS/nvtop.spec
 QA_RPATHS=$(( 0x0001|0x0010 )) rpmbuild -bb $RPMSPEC/nvtop.spec
 
 # Move RPM package into pickup location
-# mv ~/rpmbuild/RPMS/x86_64/nvtop-0.0.1-1.fc*.x86_64.rpm /nvtop/nvtop.rpm
+mv ~/rpmbuild/RPMS/x86_64/nvtop-0.0.1-1.fc*.x86_64.rpm /nvtop/nvtop.rpm
+pwd
+ls /nvtop
 
 # Clean up; delete the rpmbuild folder we created and move back the original one
 if [ "$RPMBUILDEXISTS" == "TRUE" ]; then
