@@ -42,11 +42,6 @@ Requires:      kernel
 %description
 (h)top like task monitor for AMD and NVIDIA GPUs. It can handle multiple GPUs and print information about them in a htop familiar way.
 
-%pre
-%post
-%prep
-%setup -q
-
 %install
 rm -rf $RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT/%{_bindir}
@@ -75,7 +70,7 @@ tar --create --file nvtop-0.0.0_bin.tar.gz nvtop-0.0.0/
 cp nvtop-0.0.0_bin.tar.gz ~/rpmbuild/SOURCES
 
 # Use rpmbuild to build the RPM package.
-QA_RPATHS=\$[ 0x0003 ] rpmbuild -bb $RPMSPEC/nvtop.spec
+rpmbuild -bb $RPMSPEC/nvtop.spec
 
 # Move RPM package into pickup location
 mv ~/rpmbuild/RPMS/x86_64/nvtop-0.0.0-1.fc*.x86_64.rpm /nvtop/nvtop.rpm
