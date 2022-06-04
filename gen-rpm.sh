@@ -28,24 +28,26 @@ mkdir ~/rpmbuild/SRPMS
 # Create nvtop .spec file with preinstall and postinstall scripts
 cat << 'EOF' > $RPMSPEC/nvtop.spec
 Name:           nvtop
-Version:        0.0.0
+Version:        0.0.1
 Release:        1%{?dist}
 Summary:        An NVIDIA Gamestream-compatible hosting server
 BuildArch:      x86_64
 
 License:        GPLv3
 URL:            https://github.com/thatsysadmin/nvtop
-Source0:        nvtop-0.0.0_bin.tar.gz
+Source0:        nvtop-0.0.1_bin.tar.gz
 
-Requires:      kernel 
+Requires:       bash
 
 %description
 (h)top like task monitor for AMD and NVIDIA GPUs. It can handle multiple GPUs and print information about them in a htop familiar way.
 
+%prep
+%setup -q
+
 %install
 rm -rf $RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT/%{_bindir}
-
 cp nvtop $RPM_BUILD_ROOT/%{_bindir}/nvtop
 
 %clean
@@ -61,19 +63,21 @@ EOF
 
 # Copy over nvtop binary and supplemental files into rpmbuild/BUILD/
 mkdir genrpm
-mkdir genrpm/nvtop-0.0.0
-cp /nvtop/build/src/nvtop genrpm/nvtop-0.0.0/nvtop
+mkdir genrpm/nvtop-0.0.1
+ls /nvtop/build/src/
+cp /nvtop/build/src/nvtop genrpm/nvtop-0.0.1/nvtop
 cd genrpm
 
 # tarball everything as if it was a source file for rpmbuild
-tar --create --file nvtop-0.0.0_bin.tar.gz nvtop-0.0.0/
-cp nvtop-0.0.0_bin.tar.gz ~/rpmbuild/SOURCES
+tar --create --file nvtop-0.0.1_bin.tar.gz nvtop-0.0.1/
+mv nvtop-0.0.1_bin.tar.gz ~/rpmbuild/SOURCES
 
 # Use rpmbuild to build the RPM package.
+rpmlint ~/rpmbuild/SPECS/nvtop.spec
 rpmbuild -bb $RPMSPEC/nvtop.spec
 
 # Move RPM package into pickup location
-mv ~/rpmbuild/RPMS/x86_64/nvtop-0.0.0-1.fc*.x86_64.rpm /nvtop/nvtop.rpm
+mv ~/rpmbuild/RPMS/x86_64/nvtop-0.0.1-1.fc*.x86_64.rpm /nvtop/nvtop.rpm
 
 # Clean up; delete the rpmbuild folder we created and move back the original one
 if [ "$RPMBUILDEXISTS" == "TRUE" ]; then
