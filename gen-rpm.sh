@@ -67,7 +67,7 @@ EOF
 # Copy over nvtop binary and supplemental files into rpmbuild/BUILD/
 mkdir genrpm
 mkdir genrpm/nvtop-0.0.0
-cp /nvtop/build/src/nvtop $BUILDROOT/bin/nvtop
+cp /nvtop/build/src/nvtop genrpm/nvtop-0.0.0/nvtop
 cd genrpm
 
 # tarball everything as if it was a source file for rpmbuild
