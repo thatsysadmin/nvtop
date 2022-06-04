@@ -5,14 +5,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository code
-          uses: actions/checkout@v3
+        uses: actions/checkout@v3
       - name: Setup Docker build container
-          run: docker build -t nvtop_build .
+        run: docker build -t nvtop_build .
       - name: Build
-          run: docker run nvtop_build
-      - nane: Getting ready for delivery
-          run: docker cp nvtop_build:/nvtop/nvtop.rpm ../artifacts
-      - run: actions/upload-artifact@v3
+        run: docker run nvtop_build
+      - name: Getting ready for delivery
+        run: docker cp nvtop_build:/nvtop/nvtop.rpm ../artifacts
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
         with:
           name: nvtop
           path: artifacts/
