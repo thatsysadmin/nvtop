@@ -4,8 +4,8 @@ cmake_minimum_required(VERSION 3.1)
 #                              PROJECT                              #
 #///////////////////////////////////////////////////////////////////#
 
-project(nvtop VERSION 2.0.1
-  LANGUAGES C)
+project(nvtop VERSION 2.0.2
+  LANGUAGES C CXX)
 
 set(default_build_type "Release")
 # Default build type
@@ -87,6 +87,16 @@ add_custom_target(uninstall
   COMMAND ${CMAKE_COMMAND} -P
   ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake)
 
+#///////////////////////////////////////////////////////////////////#
+#                             TESTING                               #
+#///////////////////////////////////////////////////////////////////#
+
+
+if (NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
+  option(BUILD_TESTING "Build tests" OFF)
+endif()
+include(CTest)
+add_subdirectory(tests)
 
 #///////////////////////////////////////////////////////////////////#
 #                            PACKAGING                              #
