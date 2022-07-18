@@ -1,4 +1,4 @@
-FROM fedora:35 AS nvtop_build
+FROM fedora:36 AS nvtop_build
 
 RUN dnf update -y
 RUN dnf install -y cmake ncurses-devel wget rpmdevtools rpmlint
